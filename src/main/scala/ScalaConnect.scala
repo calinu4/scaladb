@@ -13,11 +13,12 @@ object ScalaConnect {
   def main(args:Array[String]) {
     ScalaConnect.connectToDatabase()
     ScalaConnect.createTable()
-    ScalaConnect.retrieveData()
+    ScalaConnect.retrieveData("city")
     println("Reading data from World Database")
     ScalaConnect.cities.foreach(e => println(e))
     //ScalaConnect.setData()
     //ScalaConnect.insertIntoTable(6,"Bucharest","BCR","South Romania",3000000)
+
   }
 
   def connectToDatabase()={
@@ -35,10 +36,10 @@ object ScalaConnect {
     }
     //connection.close()
   }
-  def retrieveData()={
+  def retrieveData(table:String)={
     try {
       val statement = connection.createStatement()
-      val resultSet = statement.executeQuery("SELECT * FROM city limit 5")
+      val resultSet = statement.executeQuery(s"SELECT * FROM $table limit 10")
       while (resultSet.next()) {
         val id = resultSet.getInt("ID")
         val name = resultSet.getString("Name")
