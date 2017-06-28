@@ -13,19 +13,29 @@ object Hangman {
   var won:Boolean=false
   var guesses:ListBuffer[Char]=new ListBuffer[Char]()
   var count:Int=0
-
+  var dashedWord:ListBuffer[Char]=new ListBuffer[Char]()
 
   def main(args: Array[String]): Unit = {
     Hangman.connectToDatabase()
     Hangman.retrieveData("words")
     Hangman.chooseWord()
-    //println("Selected word: "+selectedWord)
+    Hangman.displayWord()
+
   }
 
+  //Display dashed word
+  def displayWord()={
+    dashedWord.foreach(c=>print(c+" "))
+    println(selectedWord)
+    println(words.length)
+  }
   //Word selector by computer
   def chooseWord()={
     val number=scala.util.Random.nextInt(words.length-1)
     selectedWord=words(number)
+    for(i<-0 until selectedWord.length)
+      dashedWord+='_'
+
   }
   //Connect to database
   def connectToDatabase()={
@@ -49,7 +59,7 @@ object Hangman {
   def retrieveData(table:String)={
     try {
       val statement = connection.createStatement()
-      val resultSet = statement.executeQuery(s"SELECT * FROM $table limit 1000")
+      val resultSet = statement.executeQuery(s"SELECT * FROM $table")
       while (resultSet.next()) {
         words +=resultSet.getString("name")
       }
