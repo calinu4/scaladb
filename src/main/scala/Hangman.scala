@@ -30,12 +30,12 @@ object Hangman {
     var sc = new Scanner(System.in)
     var notChosen=true
      while(notChosen){
-       val option=sc.nextInt()
+       val option=sc.next()
        option match{
-         case 1=>notChosen=false;chooseWord(1)
-         case 2=>notChosen=false;chooseWord(2)
-         case 3=>notChosen=false;chooseWord(3)
-         case 4=>System.exit(0)
+         case "1"=>notChosen=false;chooseWord(1)
+         case "2"=>notChosen=false;chooseWord(2)
+         case "3"=>notChosen=false;chooseWord(3)
+         case "4"=>System.exit(0)
          case _=>println("Invalid Input. Try again!")
        }
      }
