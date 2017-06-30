@@ -39,18 +39,17 @@ object Main extends App{
   def runQuery = {
     val insertPeople = Future {
       val query = peopleTable ++= Seq(
-        (10, "Jack", "Wood", 36)
-        , (20, "Tim", "Brown", 24)
-        , (20, "Alex", "Smith", 30)
-        , (20, "Dave", "Mose", 27)
-        , (20, "Colin", "Ngoju", 45)
-        , (20, "Alex", "Poplis", 21)
-        , (20, "Mark", "Fraser", 28)
-        , (20, "Luie", "Melen", 39)
-        , (20, "Alex", "Nockis", 44)
-        , (20, "Lea", "Smith", 49)
-        , (20, "Sue", "Collos", 50)
-
+        (10, "Jack", "Wood", 36,"London","Highfield Avenue",23)
+        , (20, "Tim", "Brown", 24,"London","Highfield Avenue",45)
+        , (20, "Alex", "Smith",30,"Cambridge","Russell Avenue",2)
+        , (20, "Dave", "Mose", 27,"Manchester","Broadway Road",100)
+        , (20, "Colin", "Ngoju", 45,"Brighton","Pier Road",5)
+        , (20, "Alex", "Poplis", 21,"London","Highfield Avenue",78)
+        , (20, "Mark", "Fraser", 28,"Cambridge","Russell Avenue",67)
+        , (20, "Luie", "Melen", 39,"Glasgow","Oxford St",134)
+        , (20, "Alex", "Nockis", 44,"Oxford","New Hyke",3)
+        , (20, "Lea", "Smith", 49,"London","Stanmore Road",23)
+        , (20, "Sue", "Collos", 50,"Brighton","Sunset",48)
       )
       println(query.statements.head)
       db.run(query)
@@ -138,17 +137,42 @@ object Main extends App{
       db.run(comName.result)
     }
     Await.result(common,Duration.Inf).andThen{
-      case Success(s) => println("Most common last name : "+s.last._1);listPeople
+      case Success(s) => println("Most common last name : "+s.last._1);commonCity
       case Failure(_) => println("An error occurred!")
     }
   }
 
-   //
+   //Most common city
+   def commonCity={
+
+     val commonC=Future {
+       val comCity=peopleTable.groupBy(_.city).map{case(city,group)=>(city,group.length)}.sortBy(_._2)
+       println(comCity.result.statements.head)
+       db.run(comCity.result)
+     }
+     Await.result(commonC,Duration.Inf).andThen{
+       case Success(s) => println("Most common city : "+s.last._1);commonStreet
+       case Failure(_) => println("An error occurred!")
+     }
+   }
+  //Most common street with people that have neighbours
+  def commonStreet ={
+
+    val commonStreet=Future {
+      val comC=peopleTable.groupBy(_.street).map{case(street,group)=>(street,group.length)}.sorted(_._2.reverse)
+      println(comC.result.statements.head)
+      db.run(comC.result)
+    }
+    Await.result(commonStreet,Duration.Inf).andThen{
+      case Success(s) =>print("Number of people on same street: ");s.foreach(r=>print(r.toString()+", "));listPeople
+      case Failure(_) => println("An error occurred!")
+    }
+  }
 
 
   def listPeople = {
     val queryFuture = Future {
-      db.run(peopleTable.result).map(_.foreach { case (id, fName, lName, age) => println(s" $id $fName $lName $age") })
+      db.run(peopleTable.result).map(_.foreach { case (id, fName, lName, age,city,street,hNo) => println(s" $id $fName $lName $age $city $street $hNo") })
     }
     Await.result(queryFuture, Duration.Inf).andThen { case Success(_) => db.close()
     case Failure(error) => println("Listing people failed due to: " + error.getMessage)
