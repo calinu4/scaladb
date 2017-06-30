@@ -8,5 +8,6 @@ class People(tag: Tag) extends Table[(Int, String, String, Int,String,String,Int
   def city = column[String]("PER_CITY")
   def street = column[String]("PER_STREET")
   def houseNumber = column[Int]("HOUSE_NUMBER")
+
   def * = (id, fName, lName, age,city,street,houseNumber)
 }
