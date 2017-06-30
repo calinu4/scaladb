@@ -1,22 +1,20 @@
 import java.sql.{Connection, DriverManager, SQLException}
 import java.util
 import java.util.Scanner
-
 import com.mysql._
-
 import scala.collection.mutable.ListBuffer
 
 object Hangman {
-  var connection: Connection = null
+  var connection: Connection = null //keep track of connection
   var words1: ListBuffer[String] = new ListBuffer[String]()
   var words2: ListBuffer[String] = new ListBuffer[String]()
   var words3: ListBuffer[String] = new ListBuffer[String]()
-  var selectedWord: String = ""
+  var selectedWord: String = "" //word to be guessed
   var gameOver: Boolean = false
   var won: Boolean = false
   var guesses: ListBuffer[Char] = new ListBuffer[Char]()
-  var count: Int = 0
-  var dashedWord: ListBuffer[Char] = new ListBuffer[Char]()
+  var count: Int = 0 //number of incorrect guesses
+  var dashedWord: ListBuffer[Char] = new ListBuffer[Char]() //
 
   def main(args: Array[String]): Unit = {
     Hangman.connectToDatabase()
@@ -40,6 +38,7 @@ object Hangman {
         case _ => println("Invalid Input. Try again!")
       }
     }
+    sc.close()
   }
 
   def drawHangman() = {
@@ -64,7 +63,8 @@ object Hangman {
           if (wordChars(i) == c)
             dashedWord(i) = c
       } else {
-        count += 1; drawHangman()
+        count += 1;
+        drawHangman()
       }
       won = checkWin()
       displayWord()
