@@ -164,7 +164,7 @@ object Main extends App{
       db.run(comC.result)
     }
     Await.result(commonStreet,Duration.Inf).andThen{
-      case Success(s) =>print("Number of people on same street: ");s.foreach(r=>print(r.toString()+", "));listPeople
+      case Success(s) =>print("Number of people on same street:");s.foreach(r=>print(r.toString()+", "));listPeople
       case Failure(_) => println("An error occurred!")
     }
   }
